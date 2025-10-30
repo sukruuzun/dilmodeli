@@ -1,0 +1,49 @@
+
+================================================================================
+⚡ SPEED BENCHMARK: BASELINE vs NASH-SWARM ⚡
+================================================================================
+
+[1/4] Loading gpt2...
+✓ Using MPS (Metal) acceleration
+
+[2/4] Measuring Baseline (FP32) speed...
+  Warmup (5 iterations)...
+  Measuring (20 samples)...
+  ✓ Average: 17.48 ms (±0.84 ms)
+
+[3/4] Quantizing model (Nash-Swarm)...
+  ✓ Quantization complete
+
+[4/4] Measuring Nash-Swarm speed...
+  Warmup (5 iterations)...
+  Measuring (20 samples)...
+  ✓ Average: 16.13 ms (±2.20 ms)
+
+================================================================================
+📊 SPEED BENCHMARK RESULTS
+================================================================================
+
+Method               Avg Time (ms)   Std (ms)     Throughput (inf/s)
+--------------------------------------------------------------------------------
+Baseline (FP32)              17.48        0.84          57.20
+Nash-Swarm                   16.13        2.20          61.99
+
+================================================================================
+⚡ OVERHEAD ANALYSIS
+================================================================================
+
+✅ Nash-Swarm is 1.08× FASTER than baseline
+   (Baseline: 17.48 ms, Nash: 16.13 ms)
+
+📝 INTERPRETATION:
+   ✅ EXCELLENT: Nash-Swarm is faster! (unexpected but great)
+
+💡 NOTE:
+   This measures INFERENCE ONLY (quantization already done)
+   Quantization itself adds one-time setup cost
+   Results may vary with different models/hardware
+
+================================================================================
+✅ Benchmark complete!
+================================================================================
+

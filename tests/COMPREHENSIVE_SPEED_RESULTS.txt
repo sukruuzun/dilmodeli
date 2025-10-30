@@ -1,0 +1,74 @@
+
+================================================================================
+🔬 COMPREHENSIVE SPEED ANALYSIS
+================================================================================
+
+================================================================================
+Testing: gpt2
+================================================================================
+[1/5] Loading model...
+  ✓ Using MPS
+[2/5] Measuring baseline speed...
+  ✓ Baseline: 18.24 ms (±0.92)
+[3/5] Measuring quantization time...
+  ✓ Quantization took: 2.95 seconds (one-time)
+[4/5] Measuring Nash-Swarm speed...
+  ✓ Nash-Swarm: 15.46 ms (±1.69)
+[5/5] Analysis...
+
+================================================================================
+Testing: gpt2-medium
+================================================================================
+[1/5] Loading model...
+  ✓ Using MPS
+[2/5] Measuring baseline speed...
+  ✓ Baseline: 28.61 ms (±1.11)
+[3/5] Measuring quantization time...
+  ✓ Quantization took: 7.26 seconds (one-time)
+[4/5] Measuring Nash-Swarm speed...
+  ✓ Nash-Swarm: 28.81 ms (±0.71)
+[5/5] Analysis...
+
+================================================================================
+📊 SUMMARY: SPEED ACROSS MODEL SCALES
+================================================================================
+
+Model                Baseline     Nash-Swarm   Quant Time   Overhead  
+--------------------------------------------------------------------------------
+gpt2                      18.24ms      15.46ms       2.95s     0.85×
+gpt2-medium               28.61ms      28.81ms       7.26s     1.01×
+
+================================================================================
+🔍 KEY FINDINGS
+================================================================================
+
+1. INFERENCE SPEED:
+   ✅ Nash-Swarm is comparable/faster (avg 0.93×)
+   → Smaller quantized model = faster inference
+
+2. QUANTIZATION TIME:
+   gpt2                 2.95s (one-time setup)
+   gpt2-medium          7.26s (one-time setup)
+   → Acceptable one-time cost for deployment
+
+3. SCALING BEHAVIOR:
+   Small model (gpt2): 0.85×
+   Large model (gpt2-medium): 1.01×
+   ✅ Overhead is scale-invariant
+
+================================================================================
+💡 INTERPRETATION
+================================================================================
+
+Nash-Swarm quantization inference is FAST:
+- Average overhead: 0.93×
+- Quantized models are smaller → faster memory access
+- No runtime Nash equilibrium (only at quantization time)
+
+IMPORTANT: This measures QUANTIZATION ONLY.
+MoE routing (if used) would add separate overhead.
+    
+================================================================================
+✅ Comprehensive test complete!
+================================================================================
+

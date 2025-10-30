@@ -1,0 +1,80 @@
+`loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+
+================================================================================
+QUANTIZATION COMPARISON: NASH-SWARM vs UNIFORM 4-BIT
+📊 SAMPLE SIZE: 50 (Optimized: 2.5× more than baseline, memory-efficient)
+================================================================================
+
+[1/5] Loading model...
+📦 Model: gpt2-large
+✓ Model loaded: 774,030,080 parameters
+✓ Using MPS (Metal) acceleration ⚡
+
+[2/5] Loading WikiText-2...
+✓ Loaded 2542 text samples
+
+[3/5] Testing Baseline (FP32)...
+  Size: 2952.69 MB
+  Loss: 5.1186
+  Perplexity: 167.10
+
+[4/5] Testing Uniform 4-bit...
+  Theoretical Size: 30.67 MB
+  Compression: 87.5%
+  Loss: 5.2122
+  Perplexity: 183.49
+
+[5/5] Testing Nash-Swarm (Mixed 2/4/8-bit)...
+  Theoretical Size: 23.24 MB
+  Compression: 90.5%
+  Avg bits/param: 3.03
+  Loss: 5.2061
+  Perplexity: 182.37
+
+================================================================================
+FINAL RESULTS
+================================================================================
+
+Method                         Size (MB)    Compression    Loss       Perplexity  
+--------------------------------------------------------------------------------
+Baseline (FP32)                   2952.69             -    5.1186      167.10
+Uniform 4-bit                       30.67         87.5%    5.2122      183.49
+Nash-Swarm (Mixed)                  23.24         90.5%    5.2061      182.37
+
+================================================================================
+DELTA ANALYSIS (vs Baseline)
+================================================================================
+
+Method                         Δ Loss       Δ Perplexity   
+--------------------------------------------------------------------------------
+Uniform 4-bit                       +1.83%          +9.81%
+Nash-Swarm (Mixed)                  +1.71%          +9.14%
+
+================================================================================
+KEY FINDINGS
+================================================================================
+
+1. COMPRESSION:
+   ✓ Nash-Swarm: 90.5% (HIGHER than Uniform)
+   ✓ Uniform 4-bit: 87.5%
+   ✓ Nash-Swarm uses adaptive bit-width (avg 3.03 bits/param)
+
+2. ACCURACY:
+   ✓ Nash-Swarm loss change: +1.71% (BETTER than Uniform)
+   ✓ Uniform 4-bit loss change: +1.83%
+
+3. THEORETICAL INSIGHT:
+   Nash-Swarm allocates bits based on parameter importance:
+   - Top 10% params: 8-bit (critical weights)
+   - Middle 20%: 4-bit (moderate importance)
+   - Bottom 70%: 2-bit (less critical)
+   
+   This adaptive strategy achieves HIGHER compression while
+   maintaining BETTER accuracy compared to uniform quantization.
+
+NOTE: This is a CPU-only, theoretical comparison.
+Actual memory savings require hardware-specific int4/int8 support.
+
+
+✅ Test completed successfully!
+
