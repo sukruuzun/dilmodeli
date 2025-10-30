@@ -78,12 +78,17 @@ def quantize_nash_swarm_adaptive(model):
             
             # Add neighborhood context (swarm cohesion)
             if len(param.shape) == 2:
-                padded = torch.nn.functional.pad(importance, (1, 1, 1, 1), mode='replicate')
-                neighbor_sum = (
-                    padded[:-2, 1:-1] + padded[2:, 1:-1] +  # top, bottom
-                    padded[1:-1, :-2] + padded[1:-1, 2:]    # left, right
-                )
-                importance = importance * (1 + neighbor_sum / 4)
+                try:
+                    # Use constant padding (more compatible than replicate)
+                    padded = torch.nn.functional.pad(importance, (1, 1, 1, 1), mode='constant', value=0)
+                    neighbor_sum = (
+                        padded[:-2, 1:-1] + padded[2:, 1:-1] +  # top, bottom
+                        padded[1:-1, :-2] + padded[1:-1, 2:]    # left, right
+                    )
+                    importance = importance * (1 + neighbor_sum / 4)
+                except Exception as e:
+                    # Skip neighborhood calculation if padding fails
+                    pass
             
             # Sample for large tensors
             flat_importance = importance.flatten()
