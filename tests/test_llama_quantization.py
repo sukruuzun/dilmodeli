@@ -250,7 +250,7 @@ def main():
     # Load dataset
     print("\n[2/6] Loading WikiText-2 dataset...")
     dataset = load_dataset("wikitext", "wikitext-2-raw-v1", split="test")
-    text_samples = [d['text'] for d in dataset if len(d['text'].strip()) > 20][:30]  # 30 samples
+    text_samples = [d['text'] for d in dataset if len(d['text'].strip()) > 20][:50]  # 50 samples
     print(f"  ✓ Loaded {len(text_samples)} text samples")
     
     # Baseline perplexity
@@ -288,6 +288,30 @@ def main():
     print(f"  ✓ Compression: {nash_info['compression_ratio']:.1f}%")
     print(f"  ✓ Size: {nash_info['quantized_size_mb']:.1f} MB")
     print(f"  ✓ Avg bits/param: {nash_info['avg_bits']:.2f}")
+    
+    # Save Nash-Swarm quantized model
+    print("\n[6/6] Saving Nash-Swarm quantized model...")
+    save_filename = model_name.replace('/', '_').replace('-', '_').lower() + '_nash_swarm.pt'
+    save_path = os.path.join(os.path.dirname(__file__), save_filename)
+    
+    try:
+        torch.save({
+            'model_state_dict': nash_model.state_dict(),
+            'model_config': baseline_model.config.to_dict(),
+            'model_name': model_name,
+            'quantization_info': nash_info,
+            'results': {
+                'baseline_loss': baseline_loss,
+                'nash_loss': nash_loss,
+                'nash_delta': nash_delta,
+                'compression_ratio': nash_info['compression_ratio'],
+                'quantized_size_mb': nash_info['quantized_size_mb']
+            }
+        }, save_path)
+        print(f"  ✓ Model saved: {save_filename}")
+        print(f"  ✓ Path: {save_path}")
+    except Exception as e:
+        print(f"  ⚠️ Could not save model: {e}")
     
     # Results summary
     print("\n" + "="*80)
