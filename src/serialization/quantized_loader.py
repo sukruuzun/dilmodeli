@@ -12,7 +12,13 @@ import struct
 import json
 from pathlib import Path
 from typing import Dict, Any, Optional
-from transformers import AutoConfig, AutoModelForCausalLM
+from transformers import (
+    AutoConfig, 
+    AutoModelForCausalLM,
+    GPT2Config,
+    GPTNeoConfig,
+    LlamaConfig,
+)
 
 
 class QuantizedModelLoader:
@@ -155,8 +161,24 @@ class QuantizedModelLoader:
         if model_config is None:
             raise ValueError("Model config not found in metadata")
         
-        # Config'i AutoConfig'e çevir
-        config = AutoConfig.from_dict(model_config)
+        # Config'i doğru sınıftan oluştur
+        # AutoConfig.from_dict() yok, model_type'a göre sınıf seçmeliyiz
+        model_type = model_config.get('model_type', 'gpt2')
+        
+        CONFIG_MAPPING = {
+            'gpt2': GPT2Config,
+            'gpt_neo': GPTNeoConfig,
+            'llama': LlamaConfig,
+        }
+        
+        config_class = CONFIG_MAPPING.get(model_type, GPT2Config)
+        
+        try:
+            config = config_class(**model_config)
+        except Exception as e:
+            print(f"    ⚠️ Error creating config with {config_class.__name__}: {e}")
+            print(f"    Trying GPT2Config as fallback...")
+            config = GPT2Config(**model_config)
         
         # Model oluştur
         print(f"    Creating model architecture...")
